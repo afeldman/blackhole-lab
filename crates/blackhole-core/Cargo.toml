@@ -1,0 +1,16 @@
+[package]
+name = "blackhole-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Validated SI-unit physics core: Schwarzschild radius, homogeneous-sphere mass, critical radius"
+publish.workspace = true
+
+[lints]
+workspace = true
+
+# No dependencies, by design. The physics core is pure computation on f64 with
+# validated newtypes; every dependency here would be a supply-chain and
+# auditability cost with no benefit. See docs/architecture.md.
+[dependencies]

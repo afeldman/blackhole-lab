@@ -1,0 +1,1015 @@
+Black Hole Lab — M2 CLI acceptance transcript
+binary:      /Users/anton.feldmann/backup/Projects/crater/idea/blackhole/target/debug/blackhole
+rustc:       rustc 1.98.1 (48a229cea 2026-09-01) (Homebrew)
+cargo:       cargo 1.98.1 (797e8a9bc 2026-08-05) (Homebrew)
+host:        Darwin 25.6.0 arm64
+date (UTC):  2026-10-15T12:05:35Z
+
+######################################################################
+# 1. Non-interactive: the three two-of-three combinations
+######################################################################
+
+======================================================================
+# radius + mean density (1 km sphere of water)
+$ ./target/debug/blackhole calc --radius 1 --radius-unit km --density water --label 1 km water sphere
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 1 km water sphere
+  Mass                                   4.188790e12 kg (= 4.188790e9 t)
+  Physical radius R                      1.000000e3 m (= 1.000000e0 km)
+  Mean density (sphere model)            1.000000e3 kg/m3 (= 1.000000e0 g/cm3)  [water (model assumption: Nominal 1000 kg/m3; liquid water at 4 degC is 999.97 kg/m3)]
+  Schwarzschild radius r_s               6.221325e-15 m
+  Compactness ratio r_s / R              6.221325e-18
+  Ratio R / r_s                          1.607375e17
+  Critical radius at assumed density     4.009208e11 m (= 2.679990e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 6.221325e-15 m and R = 1.000000e3 m (=
+  1.000000e0 km), so r_s / R = 6.221325e-18 and R / r_s = 1.607375e17. Under
+  the stated assumptions the surface lies outside the horizon. This compares
+  two lengths of the model; it is not a prediction about collapse.
+  2. Critical radius. At the assumed mean density of 1.000000e3 kg/m3 (=
+  1.000000e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  4.009208e11 m (= 2.679990e0 au). The object's radius is R / R_krit =
+  2.494259e-9. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# mass + physical radius (twenty Earth masses at one Earth radius)
+$ ./target/debug/blackhole calc --mass 20 --mass-unit Mearth --radius 1 --radius-unit Rearth --label 20 Mearth in 1 Rearth
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 20 Mearth in 1 Rearth
+  Mass                                   1.194434e26 kg (= 2.000000e1 Mearth)
+  Physical radius R                      6.378100e6 m (= 1.000000e0 Rearth)
+  Mean density (sphere model)            1.099004e5 kg/m3 (= 1.099004e2 g/cm3)  [derived from mass and radius]
+  Schwarzschild radius r_s               1.774011e-1 m (= 1.774011e2 mm)
+  Compactness ratio r_s / R              2.781410e-8
+  Ratio R / r_s                          3.595299e7
+  Critical radius at assumed density     3.824361e10 m (= 5.497140e1 Rsun)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 1.774011e-1 m (= 1.774011e2 mm) and R =
+  6.378100e6 m (= 1.000000e0 Rearth), so r_s / R = 2.781410e-8 and R / r_s =
+  3.595299e7. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 1.099004e5 kg/m3 (=
+  1.099004e2 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  3.824361e10 m (= 5.497140e1 Rsun). The object's radius is R / R_krit =
+  1.667756e-4. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# mass + mean density (a solar mass of granite), radius derived
+$ ./target/debug/blackhole calc --mass 1 --mass-unit Msun --density granite --label 1 Msun of granite
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 1 Msun of granite
+  Mass                                   1.988410e30 kg (= 1.000000e0 Msun)
+  Physical radius R                      5.602104e8 m (= 8.783343e1 Rearth)
+  Mean density (sphere model)            2.700000e3 kg/m3 (= 2.700000e0 g/cm3)  [granite (model assumption: Typical granite; individual samples span roughly 2600-2800 kg/m3)]
+  Schwarzschild radius r_s               2.953250e3 m (= 2.953250e0 km)
+  Compactness ratio r_s / R              5.271680e-6
+  Ratio R / r_s                          1.896928e5
+  Critical radius at assumed density     2.439926e11 m (= 1.630990e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 2.953250e3 m (= 2.953250e0 km) and R =
+  5.602104e8 m (= 8.783343e1 Rearth), so r_s / R = 5.271680e-6 and R / r_s =
+  1.896928e5. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 2.700000e3 kg/m3 (=
+  2.700000e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  2.439926e11 m (= 1.630990e0 au). The object's radius is R / R_krit =
+  2.296014e-3. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# cgs density input with scientific notation
+$ ./target/debug/blackhole calc --radius 6371 --radius-unit km --density 2.7 g/cm3 --label rock planet
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 rock planet
+  Mass                                   2.924659e24 kg (= 2.924659e21 t)
+  Physical radius R                      6.371000e6 m (= 6.371000e3 km)
+  Mean density (sphere model)            2.700000e3 kg/m3 (= 2.700000e0 g/cm3)  [2.7 g/cm3]
+  Schwarzschild radius r_s               4.343797e-3 m (= 4.343797e0 mm)
+  Compactness ratio r_s / R              6.818077e-10
+  Ratio R / r_s                          1.466689e9
+  Critical radius at assumed density     2.439926e11 m (= 1.630990e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 4.343797e-3 m (= 4.343797e0 mm) and R =
+  6.371000e6 m (= 6.371000e3 km), so r_s / R = 6.818077e-10 and R / r_s =
+  1.466689e9. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 2.700000e3 kg/m3 (=
+  2.700000e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  2.439926e11 m (= 1.630990e0 au). The object's radius is R / R_krit =
+  2.611145e-5. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+######################################################################
+# 2. Known objects, by name and by index, including one with no surface
+######################################################################
+
+======================================================================
+# the Sun
+$ ./target/debug/blackhole object Sun
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 Sun
+  Classification                         reference data — NASA NSSDCA Sun Fact Sheet (2024): mass 1.9884e30 kg, volumetric mean radius 695 700 km
+  Mass                                   1.988400e30 kg (= 9.999950e-1 Msun)
+  Physical radius R                      6.957000e8 m (= 1.000000e0 Rsun)
+  Mean density (sphere model)            1.409773e3 kg/m3 (= 1.409773e0 g/cm3)  [derived from the catalogued mass and radius]
+  Schwarzschild radius r_s               2.953235e3 m (= 2.953235e0 km)
+  Compactness ratio r_s / R              4.244984e-6
+  Ratio R / r_s                          2.355721e5
+  Critical radius at assumed density     3.376634e11 m (= 2.257140e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 2.953235e3 m (= 2.953235e0 km) and R =
+  6.957000e8 m (= 1.000000e0 Rsun), so r_s / R = 4.244984e-6 and R / r_s =
+  2.355721e5. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 1.409773e3 kg/m3 (=
+  1.409773e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  3.376634e11 m (= 2.257140e0 au). The object's radius is R / R_krit =
+  2.060336e-3. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+  Note on this entry                     Volumetric mean radius; the photospheric radius is used, not the equatorial one.
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# Sagittarius A* (no surface)
+$ ./target/debug/blackhole object sgr a*
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 Sagittarius A*
+  Classification                         reference data — GRAVITY Collaboration et al. (2022), A&A 657, L12, doi:10.1051/0004-6361/202142465: M = (4.297 +/- 0.012)e6 Msun
+  Mass                                   8.544197e36 kg (= 4.297000e6 Msun)
+  Physical radius R                      not applicable (the object has no material surface)
+  Mean density (sphere model)            not applicable
+  Schwarzschild radius r_s               1.269012e10 m (= 1.824079e1 Rsun)
+  Compactness ratio r_s / R              not applicable
+  Ratio R / r_s                          not applicable
+  Critical radius at assumed density     not applicable
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 1.269012e10 m (= 1.824079e1 Rsun). No
+  material surface is defined for this object, so there is no radius to
+  compare r_s with; r_s is the only length the model provides for it.
+  2. Critical radius. Not computed: the assumed-density model needs a mean
+  density, and this object has no material surface for one to be defined
+  against.
+
+  Note on this entry                     No material surface exists: the Schwarzschild radius is the only length defined for it.
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# the Moon
+$ ./target/debug/blackhole object moon
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 Moon
+  Classification                         reference data — NASA NSSDCA Moon Fact Sheet (2024): mass 0.07346e24 kg, volumetric mean radius 1737.4 km
+  Mass                                   7.346000e22 kg (= 7.346000e19 t)
+  Physical radius R                      1.737400e6 m (= 1.737400e3 km)
+  Mean density (sphere model)            3.343974e3 kg/m3 (= 3.343974e0 g/cm3)  [derived from the catalogued mass and radius]
+  Schwarzschild radius r_s               1.091051e-4 m (= 1.091051e2 um)
+  Compactness ratio r_s / R              6.279794e-11
+  Ratio R / r_s                          1.592409e10
+  Critical radius at assumed density     2.192437e11 m (= 1.465554e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 1.091051e-4 m (= 1.091051e2 um) and R =
+  1.737400e6 m (= 1.737400e3 km), so r_s / R = 6.279794e-11 and R / r_s =
+  1.592409e10. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 3.343974e3 kg/m3 (=
+  3.343974e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  2.192437e11 m (= 1.465554e0 au). The object's radius is R / R_krit =
+  7.924515e-6. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# Earth selected by index
+$ ./target/debug/blackhole object 2
+----------------------------------------------------------------------
+Results
+-------
+  Object                                 Earth
+  Classification                         reference data — NASA NSSDCA Earth Fact Sheet (2024): mass 5.9722e24 kg, volumetric mean radius 6371.000 km
+  Mass                                   5.972200e24 kg (= 1.000005e0 Mearth)
+  Physical radius R                      6.371000e6 m (= 6.371000e3 km)
+  Mean density (sphere model)            5.513443e3 kg/m3 (= 5.513443e0 g/cm3)  [derived from the catalogued mass and radius]
+  Schwarzschild radius r_s               8.870103e-3 m (= 8.870103e0 mm)
+  Compactness ratio r_s / R              1.392262e-9
+  Ratio R / r_s                          7.182555e8
+  Critical radius at assumed density     1.707446e11 m (= 1.141357e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 8.870103e-3 m (= 8.870103e0 mm) and R =
+  6.371000e6 m (= 6.371000e3 km), so r_s / R = 1.392262e-9 and R / r_s =
+  7.182555e8. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 5.513443e3 kg/m3 (=
+  5.513443e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  1.707446e11 m (= 1.141357e0 au). The object's radius is R / R_krit =
+  3.731303e-5. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+######################################################################
+# 3. Catalogues
+######################################################################
+
+======================================================================
+# list both catalogues
+$ ./target/debug/blackhole list
+----------------------------------------------------------------------
+Known astronomical objects:
+  1. Sun                                 1.988400e30 kg   [reference data]
+     NASA NSSDCA Sun Fact Sheet (2024): mass 1.9884e30 kg, volumetric mean radius 695 700 km
+  2. Earth                               5.972200e24 kg   [reference data]
+     NASA NSSDCA Earth Fact Sheet (2024): mass 5.9722e24 kg, volumetric mean radius 6371.000 km
+  3. Moon                                7.346000e22 kg   [reference data]
+     NASA NSSDCA Moon Fact Sheet (2024): mass 0.07346e24 kg, volumetric mean radius 1737.4 km
+  4. Jupiter                             1.898130e27 kg   [reference data]
+     NASA NSSDCA Jupiter Fact Sheet (2024): mass 1.89813e27 kg, volumetric mean radius 69911 km
+  5. Sagittarius A*                      8.544197e36 kg   [reference data]
+     GRAVITY Collaboration et al. (2022), A&A 657, L12, doi:10.1051/0004-6361/202142465: M = (4.297 +/- 0.012)e6 Msun
+  6. neutron star (representative)       2.783774e30 kg   [model assumption]
+     Representative values (1.4 Msun, R = 12 km), not a measurement of a specific object
+
+Built-in material densities:
+  water                          1.000000e3 kg/m3   [model assumption]
+     Nominal 1000 kg/m3; liquid water at 4 degC is 999.97 kg/m3
+  ice                            9.170000e2 kg/m3   [model assumption]
+     Bubble-free freshwater ice near 0 degC; sea ice is appreciably lower
+  rock                           2.700000e3 kg/m3   [model assumption]
+     Generic crustal rock. Common range 2400-3000 kg/m3; see granite and basalt
+  granite                        2.700000e3 kg/m3   [model assumption]
+     Typical granite; individual samples span roughly 2600-2800 kg/m3
+  basalt                         2.900000e3 kg/m3   [model assumption]
+     Typical basalt; individual samples span roughly 2800-3000 kg/m3
+  iron                           7.874000e3 kg/m3   [model assumption]
+     Pure solid iron at room temperature; liquid iron is slightly less dense
+  air (sea level, 15 degC)       1.225000e0 kg/m3   [model assumption]
+     ISA standard atmosphere at sea level, 15 degC
+----------------------------------------------------------------------
+exit status: 0   expected: ok   verdict: PASS
+
+######################################################################
+# 4. Usage and failure paths (non-zero exit statuses are expected)
+######################################################################
+
+======================================================================
+# no quantity given
+$ ./target/debug/blackhole calc
+----------------------------------------------------------------------
+error: specify exactly two of --mass, --radius and --density (got 0); the third quantity is derived from the sphere model
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# only one quantity given
+$ ./target/debug/blackhole calc --mass 1
+----------------------------------------------------------------------
+error: specify exactly two of --mass, --radius and --density (got 1); the third quantity is derived from the sphere model
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# all three quantities given
+$ ./target/debug/blackhole calc --mass 1 --radius 1 --density 1000
+----------------------------------------------------------------------
+error: specify exactly two of --mass, --radius and --density (got 3); the third quantity is derived from the sphere model
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# unknown mass unit
+$ ./target/debug/blackhole calc --mass 1 --mass-unit stone --radius 1
+----------------------------------------------------------------------
+error: unknown mass unit `stone`; supported: kg, g, t, Msun, Mearth, Mjup
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# unknown length unit
+$ ./target/debug/blackhole calc --radius 1 --radius-unit furlong --density 1000
+----------------------------------------------------------------------
+error: unknown length unit `furlong`; supported: m, km, cm, au, Rsun, Rearth, Rjup, ly, pc
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# unknown material
+$ ./target/debug/blackhole calc --radius 1 --density unobtainium
+----------------------------------------------------------------------
+error: `unobtainium` is not a number; known materials: water, ice, rock, granite, basalt, iron, air (sea level, 15 degC)
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# negative mass
+$ ./target/debug/blackhole calc --mass -5 --radius 1
+----------------------------------------------------------------------
+error: mass must be greater than zero, got -5
+----------------------------------------------------------------------
+exit status: 1   expected: error   verdict: PASS
+
+======================================================================
+# negative density
+$ ./target/debug/blackhole calc --radius 1 --density -5
+----------------------------------------------------------------------
+error: density must be greater than zero, got -5
+----------------------------------------------------------------------
+exit status: 1   expected: error   verdict: PASS
+
+======================================================================
+# zero radius
+$ ./target/debug/blackhole calc --radius 0 --density 1000
+----------------------------------------------------------------------
+error: length must be greater than zero, got 0
+----------------------------------------------------------------------
+exit status: 1   expected: error   verdict: PASS
+
+======================================================================
+# a flag where a value belongs
+$ ./target/debug/blackhole calc --mass --radius 1
+----------------------------------------------------------------------
+error: a value is required for '--mass <VALUE>' but none was supplied
+
+For more information, try '--help'.
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# unknown object
+$ ./target/debug/blackhole object Vulcan
+----------------------------------------------------------------------
+error: no catalogued object matches `Vulcan`
+       available: 1. Sun, 2. Earth, 3. Moon, 4. Jupiter, 5. Sagittarius A*, 6. neutron star (representative)
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# out-of-range object index
+$ ./target/debug/blackhole object 99
+----------------------------------------------------------------------
+error: no catalogued object matches `99`
+       available: 1. Sun, 2. Earth, 3. Moon, 4. Jupiter, 5. Sagittarius A*, 6. neutron star (representative)
+----------------------------------------------------------------------
+exit status: 2   expected: error   verdict: PASS
+
+======================================================================
+# help
+$ ./target/debug/blackhole --help
+----------------------------------------------------------------------
+Black Hole Lab computes, for any object you describe:
+
+the Schwarzschild radius r_s = 2 G M / c^2; the compactness ratio r_s / R; and the critical radius at an assumed mean density, R_krit = sqrt(3 c^2 / (8 pi G rho)).
+
+All input is converted to SI units internally, and the result is reported together with the model's limitations. This is a static, homogeneous-sphere model: it does not simulate gravitational collapse, and it does not predict whether a horizon forms.
+
+Run without a subcommand for the interactive dialogue.
+
+Usage: blackhole [COMMAND]
+
+Commands:
+  calc    Compute from any two of mass, physical radius and mean density
+  object  Compute for one of the built-in astronomical objects
+  list    List the built-in astronomical objects and material densities
+  help    Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+
+Examples:
+  blackhole object Earth
+  blackhole calc --radius 6371 --radius-unit km --density 5513
+  blackhole calc --mass 20 --mass-unit Msun --radius 1 --radius-unit Rearth
+  blackhole calc --radius 1 --radius-unit km --density water
+  blackhole list
+----------------------------------------------------------------------
+exit status: 0   expected: ok   verdict: PASS
+
+######################################################################
+# 5. Interactive dialogue
+######################################################################
+
+======================================================================
+# mode 2, then quit at the repeat prompt
+$ printf '%s' | ./target/debug/blackhole 2\n5.9722e24\nkg\n6.371e6\nm\nEarth\nn\n
+----------------------------------------------------------------------
+Black Hole Lab
+==============
+
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode: Object mass (value, optional unit such as `1.989e30 kg`):   unit [kg] — kg, g, t, Msun, Mearth, Mjup: Physical radius (value, optional unit such as `6371 km`):   unit [m] — m, km, cm, au, Rsun, Rearth, Rjup, ly, pc: Label for this object [custom object]: 
+Results
+-------
+  Object                                 Earth
+  Mass                                   5.972200e24 kg (= 1.000005e0 Mearth)
+  Physical radius R                      6.371000e6 m (= 6.371000e3 km)
+  Mean density (sphere model)            5.513443e3 kg/m3 (= 5.513443e0 g/cm3)  [derived from mass and radius]
+  Schwarzschild radius r_s               8.870103e-3 m (= 8.870103e0 mm)
+  Compactness ratio r_s / R              1.392262e-9
+  Ratio R / r_s                          7.182555e8
+  Critical radius at assumed density     1.707446e11 m (= 1.141357e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 8.870103e-3 m (= 8.870103e0 mm) and R =
+  6.371000e6 m (= 6.371000e3 km), so r_s / R = 1.392262e-9 and R / r_s =
+  7.182555e8. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 5.513443e3 kg/m3 (=
+  5.513443e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  1.707446e11 m (= 1.141357e0 au). The object's radius is R / R_krit =
+  3.731303e-5. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+
+Another calculation? [Y/n]: 
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# mode 1 with a material name and an inline unit
+$ printf '%s' | ./target/debug/blackhole 1\n1 km\nwater\nball of water\nq\n
+----------------------------------------------------------------------
+Black Hole Lab
+==============
+
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode: Object radius (value, optional unit such as `6371 km`): Mean density (kg/m3, e.g. `2.7 g/cm3`, or a material — water, ice, rock, granite, basalt, iron, air (sea level, 15 degC)): Label for this object [custom object]: 
+Results
+-------
+  Object                                 ball of water
+  Mass                                   4.188790e12 kg (= 4.188790e9 t)
+  Physical radius R                      1.000000e3 m (= 1.000000e0 km)
+  Mean density (sphere model)            1.000000e3 kg/m3 (= 1.000000e0 g/cm3)  [water (model assumption: Nominal 1000 kg/m3; liquid water at 4 degC is 999.97 kg/m3)]
+  Schwarzschild radius r_s               6.221325e-15 m
+  Compactness ratio r_s / R              6.221325e-18
+  Ratio R / r_s                          1.607375e17
+  Critical radius at assumed density     4.009208e11 m (= 2.679990e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 6.221325e-15 m and R = 1.000000e3 m (=
+  1.000000e0 km), so r_s / R = 6.221325e-18 and R / r_s = 1.607375e17. Under
+  the stated assumptions the surface lies outside the horizon. This compares
+  two lengths of the model; it is not a prediction about collapse.
+  2. Critical radius. At the assumed mean density of 1.000000e3 kg/m3 (=
+  1.000000e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  4.009208e11 m (= 2.679990e0 au). The object's radius is R / R_krit =
+  2.494259e-9. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+
+Another calculation? [Y/n]: 
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# mode 4, combination 1 (mass and density, radius derived)
+$ printf '%s' | ./target/debug/blackhole 4\n1\n1\nMsun\ngranite\ngranite sphere\nn\n
+----------------------------------------------------------------------
+Black Hole Lab
+==============
+
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode: Which two quantities will you specify?
+  1. Mass and mean density      (the radius is derived)
+  2. Mass and physical radius   (the density is derived)
+  3. Radius and mean density    (the mass is derived)
+Combination: Object mass (value, optional unit such as `1.989e30 kg`):   unit [kg] — kg, g, t, Msun, Mearth, Mjup: Mean density (kg/m3, e.g. `2.7 g/cm3`, or a material — water, ice, rock, granite, basalt, iron, air (sea level, 15 degC)): Label for this object [custom object]: 
+Results
+-------
+  Object                                 granite sphere
+  Mass                                   1.988410e30 kg (= 1.000000e0 Msun)
+  Physical radius R                      5.602104e8 m (= 8.783343e1 Rearth)
+  Mean density (sphere model)            2.700000e3 kg/m3 (= 2.700000e0 g/cm3)  [granite (model assumption: Typical granite; individual samples span roughly 2600-2800 kg/m3)]
+  Schwarzschild radius r_s               2.953250e3 m (= 2.953250e0 km)
+  Compactness ratio r_s / R              5.271680e-6
+  Ratio R / r_s                          1.896928e5
+  Critical radius at assumed density     2.439926e11 m (= 1.630990e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 2.953250e3 m (= 2.953250e0 km) and R =
+  5.602104e8 m (= 8.783343e1 Rearth), so r_s / R = 5.271680e-6 and R / r_s =
+  1.896928e5. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 2.700000e3 kg/m3 (=
+  2.700000e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  2.439926e11 m (= 1.630990e0 au). The object's radius is R / R_krit =
+  2.296014e-3. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+
+Another calculation? [Y/n]: 
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# recovery: bad mode, bad number, invalid value, then a valid run
+$ printf '%s' | ./target/debug/blackhole 9\n2\ntwelve\n5.9722e24\nkg\n0\n2e3\nm\nEarth after typos\nn\n
+----------------------------------------------------------------------
+Black Hole Lab
+==============
+
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode:   input rejected: `9` is not one of the listed options
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode: Object mass (value, optional unit such as `1.989e30 kg`):   input rejected: `twelve` is not a number
+Object mass (value, optional unit such as `1.989e30 kg`):   unit [kg] — kg, g, t, Msun, Mearth, Mjup: Physical radius (value, optional unit such as `6371 km`):   input rejected: length must be greater than zero, got 0
+Physical radius (value, optional unit such as `6371 km`):   unit [m] — m, km, cm, au, Rsun, Rearth, Rjup, ly, pc: Label for this object [custom object]: 
+Results
+-------
+  Object                                 Earth after typos
+  Mass                                   5.972200e24 kg (= 1.000005e0 Mearth)
+  Physical radius R                      2.000000e3 m (= 2.000000e0 km)
+  Mean density (sphere model)            1.782197e14 kg/m3 (= 1.782197e11 g/cm3)  [derived from mass and radius]
+  Schwarzschild radius r_s               8.870103e-3 m (= 8.870103e0 mm)
+  Compactness ratio r_s / R              4.435051e-6
+  Ratio R / r_s                          2.254765e5
+  Critical radius at assumed density     9.496874e5 m (= 9.496874e2 km)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 8.870103e-3 m (= 8.870103e0 mm) and R =
+  2.000000e3 m (= 2.000000e0 km), so r_s / R = 4.435051e-6 and R / r_s =
+  2.254765e5. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 1.782197e14 kg/m3 (=
+  1.782197e11 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  9.496874e5 m (= 9.496874e2 km). The object's radius is R / R_krit =
+  2.105956e-3. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+
+Another calculation? [Y/n]: 
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# invalid UTF-8 on stdin is recovered from
+$ printf '%s' | ./target/debug/blackhole ��\n3\nEarth\nn\n
+----------------------------------------------------------------------
+Black Hole Lab
+==============
+
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode:   input rejected: `��` is not one of the listed options
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode: 
+Known astronomical objects:
+  1. Sun                                 1.988400e30 kg   [reference data]
+     NASA NSSDCA Sun Fact Sheet (2024): mass 1.9884e30 kg, volumetric mean radius 695 700 km
+  2. Earth                               5.972200e24 kg   [reference data]
+     NASA NSSDCA Earth Fact Sheet (2024): mass 5.9722e24 kg, volumetric mean radius 6371.000 km
+  3. Moon                                7.346000e22 kg   [reference data]
+     NASA NSSDCA Moon Fact Sheet (2024): mass 0.07346e24 kg, volumetric mean radius 1737.4 km
+  4. Jupiter                             1.898130e27 kg   [reference data]
+     NASA NSSDCA Jupiter Fact Sheet (2024): mass 1.89813e27 kg, volumetric mean radius 69911 km
+  5. Sagittarius A*                      8.544197e36 kg   [reference data]
+     GRAVITY Collaboration et al. (2022), A&A 657, L12, doi:10.1051/0004-6361/202142465: M = (4.297 +/- 0.012)e6 Msun
+  6. neutron star (representative)       2.783774e30 kg   [model assumption]
+     Representative values (1.4 Msun, R = 12 km), not a measurement of a specific object
+Object (name or number): 
+Results
+-------
+  Object                                 Earth
+  Classification                         reference data — NASA NSSDCA Earth Fact Sheet (2024): mass 5.9722e24 kg, volumetric mean radius 6371.000 km
+  Mass                                   5.972200e24 kg (= 1.000005e0 Mearth)
+  Physical radius R                      6.371000e6 m (= 6.371000e3 km)
+  Mean density (sphere model)            5.513443e3 kg/m3 (= 5.513443e0 g/cm3)  [derived from the catalogued mass and radius]
+  Schwarzschild radius r_s               8.870103e-3 m (= 8.870103e0 mm)
+  Compactness ratio r_s / R              1.392262e-9
+  Ratio R / r_s                          7.182555e8
+  Critical radius at assumed density     1.707446e11 m (= 1.141357e0 au)
+
+Interpretation
+--------------
+  1. Schwarzschild comparison. r_s = 8.870103e-3 m (= 8.870103e0 mm) and R =
+  6.371000e6 m (= 6.371000e3 km), so r_s / R = 1.392262e-9 and R / r_s =
+  7.182555e8. Under the stated assumptions the surface lies outside the
+  horizon. This compares two lengths of the model; it is not a prediction
+  about collapse.
+  2. Critical radius. At the assumed mean density of 5.513443e3 kg/m3 (=
+  5.513443e0 g/cm3), a homogeneous sphere reaches r_s = R at R_krit =
+  1.707446e11 m (= 1.141357e0 au). The object's radius is R / R_krit =
+  3.731303e-5. This object's radius is therefore smaller than the critical
+  radius, so the assumed density is far too low for it to be its own
+  horizon. The ratio follows the assumption and scales as rho^(-1/2).
+
+Important limitations
+---------------------
+  1. Every mass has a Schwarzschild radius r_s = 2 G M / c^2, so there is no
+     universal minimum mass for a black hole. A mass and an r_s say nothing on
+     their own about whether a horizon exists.
+
+  2. The density is a model assumption. Compressing a real body changes its
+     density, so the critical radius moves with the assumption; it is not a
+     fixed property of the object.
+
+  3. Comparing a radius with a Schwarzschild radius compares two lengths. It is
+     not a simulation of gravitational collapse.
+
+  4. Whether a horizon actually forms depends on the spacetime geometry, on the
+     state of the matter (pressure, temperature, composition, angular momentum)
+     and on the dynamics of the collapse. None of that is modelled here.
+
+  5. Newtonian mechanics cannot represent an event horizon. N-body dynamics,
+     relativistic ray tracing and gravitational lensing are separate, later
+     milestones and contribute nothing to this result.
+
+Another calculation? [Y/n]: 
+----------------------------------------------------------------------
+exit status: 0   expected: results   verdict: PASS
+
+======================================================================
+# end of input quits cleanly
+$ printf '%s' | ./target/debug/blackhole 
+----------------------------------------------------------------------
+Black Hole Lab
+==============
+
+Choose input mode:
+  1. Radius and mean density
+  2. Mass and physical radius
+  3. Known astronomical object
+  4. Custom object (choose any two of mass, radius, mean density)
+  l. List the built-in objects and materials
+  q. Quit
+
+Mode: 
+----------------------------------------------------------------------
+exit status: 0   expected: ok   verdict: PASS
+
+######################################################################
+# 6. Determinism and front-end agreement
+######################################################################
+
+object Earth:       two runs byte-identical (sha256 412259783c2fe3d8...)
+calc water sphere:  two runs byte-identical (sha256 c90c39b619035835...)
+calc vs interactive: value rows identical for the same input
+
+======================================================================
+SUMMARY: 31 passed, 0 failed
+======================================================================

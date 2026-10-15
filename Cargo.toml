@@ -1,0 +1,52 @@
+# Black Hole Lab — Cargo workspace
+#
+# Only the crates required by the currently released milestone are members.
+# `blackhole-gravity`, `blackhole-relativity`, `blackhole-lensing`,
+# `blackhole-render*` and `blackhole-python` are added when their milestone
+# arrives; see docs/architecture.md for the rationale (a crate split only pays
+# for itself once the module has a consumer).
+#
+# The `license` field is set to Apache-2.0; this is an authorial decision, not an engineering default. See docs/architecture.md.
+
+[workspace]
+resolver = "3"
+members = [
+    "crates/blackhole-core",
+    "crates/blackhole-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+authors = ["Black Hole Lab contributors"]
+description = "Astrophysics engine for black-hole physics, gravitational lensing and rendering"
+license = "Apache-2.0"
+publish = false
+
+[workspace.dependencies]
+blackhole-core = { path = "crates/blackhole-core" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+# Lint groups are given a lower priority than the individual allows below, so
+# that an explicit allow wins over the group. Without an explicit priority,
+# cargo warns that a group and a single lint share priority 0.
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# Numerical code legitimately uses short, conventional symbol names and
+# single-letter variables (r, m, rho), and compares floats in tests.
+similar_names = "allow"
+many_single_char_names = "allow"
+float_cmp = "allow"
+must_use_candidate = "allow"
+# f64 arithmetic is the whole point of this crate; the lint is listed
+# explicitly so that any future lossy cast is a deliberate, visible choice.
+cast_precision_loss = "allow"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

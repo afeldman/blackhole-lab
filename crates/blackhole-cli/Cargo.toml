@@ -1,0 +1,24 @@
+[package]
+name = "blackhole-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+description = "Interactive and non-interactive command-line front end for Black Hole Lab"
+publish.workspace = true
+
+[[bin]]
+name = "blackhole"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+blackhole-core.workspace = true
+# `clap` is the de-facto standard argument parser for Rust CLIs: it is actively
+# maintained, has no unsafe code in the default feature set, and removes the
+# class of hand-rolled argv parsing bugs (missing values, `--flag=value` vs
+# `--flag value`, unicode, help/usage generation) that the brief's
+# "no panics on bad input" requirement makes relevant.
+clap = { version = "4.5", features = ["derive"] }

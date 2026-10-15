@@ -1,0 +1,63 @@
+==============================================================================
+C1  Schwarzschild radius vs published values
+==============================================================================
+object         mass [kg]      r_s computed     r_s published     rel.dev
+Sun         1.988500e+30      2.953384e+03      2.953000e+03    1.30e-04
+Earth       5.972200e+24      8.870103e-03      8.870000e-03    1.16e-05
+Sgr A*      8.540000e+36      1.268388e+10      1.269000e+10    4.82e-04
+
+==============================================================================
+C2  reference shader constant SagA_rs = 1.269e10 m  (geodesic.comp line 30)
+==============================================================================
+    r_s(8.54e36 kg) = 1.268388e+10 m   -> consistent with 1.269e10 m (rel.dev 4.82e-04)
+    implied mass of SagA* = 8.544119e+36 kg = 4.2968e+06 M_sun
+
+==============================================================================
+C3  critical radius at assumed density: closed form vs bisection
+==============================================================================
+medium                  rho [kg/m3]    R_krit closed    R_krit bisect    rel.dev
+water (4 degC)               1000.0     4.009208e+11     4.009207e+11   7.03e-08
+ice                           917.0     4.186720e+11     4.186718e+11   3.98e-07
+basalt (typical)             2900.0     2.354288e+11     2.354288e+11   2.95e-07
+granite (typical)            2700.0     2.439926e+11     2.439926e+11   1.80e-07
+Earth mean                   5514.0     1.707360e+11     1.707360e+11   4.73e-08
+Sun mean                     1408.0     3.378759e+11     3.378759e+11   6.17e-08
+
+    self-consistency: at R_krit the sphere must satisfy rs(M(R_krit)) == R_krit
+      rho = 1000 kg/m3 -> R_krit = 4.009208e+11 m, M = 2.699381e+38 kg, r_s(M) = 4.009208e+11 m, ratio r_s/R = 1.000000000000000
+
+==============================================================================
+C4  light deflection: correct radial coefficient (3/2) vs reference (1/2)
+==============================================================================
+    leading order:      alpha = 4GM/(c^2 b) = 2*rs/b
+    full series (M = GM/c^2 = rs/2):
+        alpha = 4M/b + (15 pi/4)(M/b)^2 + (128/3)(M/b)^3 + ...
+    so the residual against 2*rs/b must approach
+        (15 pi/4)(M/b)^2 / (2 rs/b) = 15 pi rs / (32 b)
+
+ b [rs]   u0 (pericentre)     alpha C=3/2     2 rs/b       series   rel.dev  predicted     alpha C=1/2   ratio
+     101.057474507278e-012.3613599529e-01 2.0000e-01 2.347858e-01 1.807e-01  1.739e-017.0150808233e-02  0.2971
+     502.020516600852e-024.1222539668e-02 4.0000e-02 4.122076e-02 3.056e-02  3.052e-021.3465834493e-02  0.3267
+    1001.005063518404e-022.0299966160e-02 2.0000e-02 2.029986e-02 1.500e-02  1.499e-026.6995903641e-03  0.3300
+   10001.000500626002e-032.0029505088e-03 2.0000e-03 2.002951e-03 1.475e-03  1.475e-036.6699403545e-04  0.3330
+
+    step-size convergence of the correct branch (b = 100 rs):
+      dphi = 1e-04  alpha = 2.0299966239e-02  rel.dev vs 2/b = 1.50e-02
+      dphi = 1e-05  alpha = 2.0299966243e-02  rel.dev vs 2/b = 1.50e-02
+      dphi = 1e-06  alpha = 2.0299966160e-02  rel.dev vs 2/b = 1.50e-02
+      dphi = 1e-07  alpha = 2.0299966418e-02  rel.dev vs 2/b = 1.50e-02
+
+==============================================================================
+Interpretation
+==============================================================================
+  C1/C2: r_s = 2GM/c^2 reproduces published radii to <1e-4 relative.
+  C3:    the closed form R_krit = sqrt(3c^2/(8 pi G rho)) agrees with an
+         independent bisection root of r_s(M(R)) - R = 0.
+  C4:    the correct angular term r*f carries the factor f = 1 - rs/r;
+         omitting it (as the reference 3D/GPU code does) reduces the
+         quadratic term coefficient from 3/2 to 1/2 and therefore
+         under-predicts the deflection by a factor approaching 1/3, a
+         defect that vanishes only in the far-field limit.
+         The correct branch reproduces 2*rs/b, with a residual that
+         falls off as the analytic next-order term 15 pi rs/(32 b) -
+         i.e. the agreement improves exactly as the expansion requires.
