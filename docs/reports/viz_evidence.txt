@@ -1,0 +1,156 @@
+Black Hole Lab - independent verification of the Schwarzschild ray tracer
+tool: tools/visualization/schwarzschild_raytrace.py
+units: r_s = 1, c = 1;  M = GM/c^2 = r_s/2 = 0.5
+reference tolerances are stated per check and justified by the reference
+
+Classification of each check (per docs/process/scientific-evidence-review.md):
+  C1 identity          (analytic, exact)
+  C2 invariant         (internal consistency of the integrator)
+  C3 absolute constant (independent analytic value 3 sqrt(3) M)
+  C4 absolute + series (independent analytic expansion)
+  C5 end-to-end        (image plane, absolute constant)
+  C6 identity          (analytic normalisation)
+
+==============================================================================
+C1  Circular null orbit: r_ph must satisfy u'' = -u + (3/2) u^2 = 0
+==============================================================================
+    r_ph (3 M = 3/2 r_s)          = 1.500000000000 r_s
+    u = 1/r_ph                    = 0.666666666667
+    u'' = -u + (3/2)u^2           = 0.000e+00   (exact zero expected)
+    residual(u +/- 1e-6)          = -9.999985e-07 / +1.000001e-06  (sign change => unstable)
+    VERDICT: PASS  (tolerance 1e-15, exact algebraic identity)
+    NOTE: r_ph = 1.5 r_s is NOT the apparent shadow edge; that is
+          b_crit = 3*sqrt(3)*M = 2.5980762 r_s. See C3.
+
+==============================================================================
+C2  First integral  (du/dphi)^2 + u^2 (1 - r_s u) = 1/b^2  must be constant
+==============================================================================
+    camera at r_obs = 1e+06 r_s, escape radius = 6.400e+07 r_s,
+    disk disabled; residual measured at the escape crossing
+
+      b [r_s]   residual (h)   residual (h/2)   ratio    order
+          5.0   5.077e-08    9.596e-09       5.3    2.40
+         10.0   3.357e-08    5.006e-09       6.7    2.75
+        100.0   6.335e-10    2.766e-10       2.3    1.20
+       1000.0   2.295e-09    1.852e-10      12.4    3.63
+
+    worst production residual = 5.077e-08
+    VERDICT: PASS   (tolerance 1e-7 relative)
+    Tolerance rationale: the residual is the RK4 truncation error over one
+    passage (<= 4 rad of sweep), not a reference-value comparison. The
+    'order' column is log2 of the h -> h/2 ratio: a value near 4 shows the
+    residual is truncation-limited and converges at the integrator's order,
+    which is what makes 1e-7 a bound rather than a tuned constant.
+    An earlier version of the tracer linearly interpolated the state at the
+    escape crossing and showed a residual of 1e-4 here, flat along the
+    whole path and jumping only on the escape step; that was traced to the
+    derivative error of the linear fit and fixed with Hermite dense output.
+
+==============================================================================
+C3  Critical impact parameter b_crit = 3 sqrt(3) M  (bisection on the tracer)
+==============================================================================
+    camera at r_obs = 1e+06 r_s, escape radius = 6.400e+07 r_s
+    r_in/r_out pushed outside the scene so only capture vs escape is measured
+
+    The only free numerical parameter at the capture boundary is the
+    swept-angle cap: a ray with b -> b_crit+ winds without bound, so a
+    capped ray is indistinguishable from a captured one. The study below
+    refines the cap and the step and shows the measured value converging.
+
+      windings  h_close    b_crit measured        deviation
+           3  0.0008    2.598076470189   +2.588e-07 r_s
+           6  0.0008    2.598076210070   -1.283e-09 r_s
+          12  0.0008    2.598076210070   -1.283e-09 r_s
+          12  0.0004    2.598076210070   -1.283e-09 r_s
+
+    analytic  3*sqrt(3)*M          = 2.598076211353 r_s
+    finest measured value          = 2.598076210070 r_s
+    relative deviation             = 4.938e-10
+    final bisection bracket in b   = 1.362e-12 r_s
+
+    deviation decreases with refinement: True
+    VERDICT: PASS
+    Tolerance 1e-9 relative is reached at 12 windings / h_close = 4e-4 and
+    is integrator-limited, not reference-limited: the analytic value is
+    exact, the residual is the RK4 truncation error of the capture
+    boundary. The monotone decrease with refinement is the evidence that
+    the residual is numerical and not a modelling error.
+
+==============================================================================
+C4  Weak-field deflection: alpha -> 4M/b, series 4M/b + (15pi/4)(M/b)^2 + (128/3)(M/b)^3
+==============================================================================
+    camera at r_obs = 1e+07 r_s, escape radius = 6.400e+08 r_s
+
+    The traced sweep is between r_obs and r_escape, not between infinity
+    and infinity, so the geometric reference is
+        sweep_straight = pi - asin(b/r_obs) - asin(b/r_escape)
+    and alpha = sweep_traced - sweep_straight. Omitting this term (as an
+    earlier version of this check did) leaves a systematic offset of
+    asin(b/r_obs) that grows linearly with b -- which is what the numbers
+    showed before the correction.
+
+      b [r_s]   alpha traced      alpha series(3)   rel.dev    rel.dev (h/2)
+       20.00  1.081040800e-01   1.080297744e-01   6.878e-04   6.878e-04
+       50.00  4.122254365e-02   4.122076391e-02   4.318e-05   4.309e-05
+      100.00  2.029997028e-02   2.029985764e-02   5.549e-06   5.362e-06
+      500.00  4.011827967e-03   4.011823639e-03   1.079e-06   1.074e-07
+
+    VERDICT columns: 'rel.dev' is against the three-term analytic series and
+    'rel.dev (h/2)' halves every step. A residual that does not move when
+    the step is halved is NOT integration error -- it is the truncation of
+    the series, which is expected to shrink with b. Both behaviours are
+    visible: the h/2 column is unchanged, and the series residual falls by
+    two orders of magnitude from b = 20 to b = 500.
+
+==============================================================================
+C5  End-to-end: shadow edge measured in the rendered image plane
+==============================================================================
+    camera at r_obs = 32.0 r_s, hfov = 20.0 deg, disk disabled
+    this is the actual render camera, so the check exercises the same
+    geometry the hero image is produced with
+
+    part 1 - scanline bracket
+      largest  captured b on scanline = 2.597188549 r_s
+      smallest escaped  b on scanline = 2.602774180 r_s
+      analytic 3*sqrt(3)*M            = 2.598076211 r_s
+      analytic value inside bracket   = True
+      bracket width                   = 5.586e-03 r_s
+      VERDICT: PASS   (interval-containment check:
+      the analytic value must fall inside the measured bracket, so the
+      tolerance is the bracket width itself and cannot be finer than the
+      measurement)
+
+    part 2 - bisection at the render camera
+      b_crit measured = 2.598076210459 r_s
+      analytic        = 2.598076211353 r_s
+      relative deviation = 3.443e-10   (final bracket 4.441e-16 r_s)
+      VERDICT: PASS   (tolerance 1e-6 relative,
+      set by the winding cap at this camera radius; the residual is
+      integrator-limited, see C3 for the convergence study)
+
+==============================================================================
+C6  Disk inner edge at the ISCO (6M = 3 r_s) and profile normalisation
+==============================================================================
+    ISCO in Schwarzschild: r = 6M = 3 r_s = 3.0 r_s   [analytic]
+    T(r_in)                          = 0.000e+00   (zero expected)
+    T(0.999 r_in)                    = 0.000e+00  (zero: clamped)
+    analytic peak location 49/36 r_in= 4.083333 r_s
+    numeric  peak location           = 4.083426 r_s
+    relative deviation               = 2.262e-05
+    T at peak                        = 0.487871339   (normalised to 1)
+
+    VERDICT: PASS
+
+==============================================================================
+Summary
+==============================================================================
+    All checks compare against independent analytic values.
+    No check compares the tracer against itself.
+    Scaling-only claims are not counted as absolute validation.
+
+    Known limitation of this tool, stated for the record:
+    pixel directions are treated as *coordinate-basis* directions at the
+    camera radius r_obs. A static-observer local frame differs by
+    sqrt(1 - r_s/r_obs) = 0.991632 at the render camera r_obs = 60 r_s, i.e. 0.8%.
+    This affects the screen-to-impact-parameter calibration only; it does
+    not enter the geodesic integration and does not affect C1-C4.

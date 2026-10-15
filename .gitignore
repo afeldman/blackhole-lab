@@ -8,3 +8,7 @@
 .idea/
 .vscode/
 *.swp
+
+# Python bytecode from tools/visualization (numpy + Pillow only; not a package)
+__pycache__/
+*.pyc
